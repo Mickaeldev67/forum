@@ -4,7 +4,7 @@ import Subscribe from '../components/Subscribe.vue';
 
 const routes = [
   { path: '/', name: 'Home', component: Connexion },
-   { path: '/subscribe', name: 'Subscribe', component: Subscribe }
+  { path: '/subscribe', name: 'Subscribe', component: Subscribe }
 ];
 
 const router = createRouter({

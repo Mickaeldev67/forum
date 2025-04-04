@@ -13,7 +13,7 @@ class AppCustomAuthenticator extends AbstractAuthenticator
 {
     public function supports(Request $request): ?bool
     {
-        // TODO: Implement supports() method.
+        return $request->attributes->get('_route') === 'api_login';
     }
 
     public function authenticate(Request $request): Passport
