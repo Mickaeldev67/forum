@@ -17,21 +17,16 @@
         }
         // Logique de création de compte
 
-        // Générer un sel
-        const salt = await bcrypt.genSalt(10);
-        // Hasher le mot de passe avec le sel
-        const hashedPassword = await bcrypt.hash(input.value.password, salt);
-
         const userData = {
             email: input.value.email,
             username: input.value.username,
-            password: hashedPassword,
+            password: input.value.password,
         };
 
         try {
-            const response = await api.post('/users', userData, {
+            const response = await api.post('/register', userData, {
                 headers: {
-                    'Content-Type': 'application/ld+json',
+                    'Content-Type': 'application/json',
                 },
             });
 
