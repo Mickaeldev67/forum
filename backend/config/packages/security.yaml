@@ -8,10 +8,10 @@ security:
         app_user_provider:
             entity:
                 class: App\Entity\User
-                property: email
+                property: username
     firewalls:
         login:
-            pattern: ^/api/login
+            pattern: ^/api/login_check
             stateless: true
             json_login:
                 check_path: /api/login_check
@@ -23,6 +23,7 @@ security:
         api:
             pattern: ^/api
             stateless: true
+            provider: app_user_provider
             jwt: ~
 
         register:
@@ -37,14 +38,16 @@ security:
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
+        main:
+            lazy: true
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
-        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
         - { path: ^/api/users, roles: PUBLIC_ACCESS }
-        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api, roles: IS_AUTHENTICATED }
 
 when@test:
     security:

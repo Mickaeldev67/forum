@@ -12,6 +12,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Security;
 
 class UserController extends AbstractController
 {
@@ -44,6 +47,10 @@ class UserController extends AbstractController
         $user->setEmail($data['email']);
         $user->setUsername($data['username']);
 
+        // 🔐 Assigne le rôle ROLE_USER
+        $user->setRoles(['ROLE_USER']);
+
+
         // Hachage du mot de passe
         $hashedPassword = $this->passwordHasher->hashPassword($user, $data['password']);
         $user->setPassword($hashedPassword);
@@ -55,44 +62,18 @@ class UserController extends AbstractController
         return new JsonResponse(['message' => 'User registered successfully'], 201);
     }
 
-    #[Route('/api/login', name: 'api_login', methods: ['POST'])]
-    public function login(Request $request): JsonResponse
+    #[Route('/api/currentUser', name: 'api_current_user', methods: ['GET'])]
+    public function getCurrentUser(Request $request): JsonResponse
     {
-        // Récupération des données envoyées
-        $data = json_decode($request->getContent(), true);
+        // Symfony gère l'authentification et fournit l'utilisateur via getUser()
+        $user = $this->getUser();
 
-        if (!isset($data['email']) || !isset($data['password'])) {
-            return new JsonResponse(['error' => 'Missing credentials'], 400);
+        // Si l'utilisateur n'est pas connecté (token invalide ou manquant)
+        if (!$user) {
+            throw new AuthenticationException('Non connecté');
         }
 
-        // Recherche de l'utilisateur par email
-        $user = $this->userRepository->findOneBy(['email' => $data['email']]);
-
-        if (!$user || !$this->passwordHasher->isPasswordValid($user, $data['password'])) {
-            return new JsonResponse(['error' => 'Invalid credentials'], 401);
-        }
-
-        // Création du token JWT
-        $token = $this->JWTManager->create($user);
-
-        // Créer une réponse et ajouter un cookie contenant le JWT
-        $response = new JsonResponse(['message' => 'success']);
-
-        // Ajouter le JWT dans un cookie HTTP-only
-        $response->headers->setCookie(
-            new Cookie(
-                'BEARER', // Nom du cookie
-                $token,   // Le contenu du token
-                time() + 3600, // Expiration du cookie (1 heure)
-                '/', // Path
-                null, // Domaine
-                true, // Secure (vrai en HTTPS)
-                true, // HTTPOnly (ne peut pas être accédé par JS)
-                false, // Raw (false pour encodage)
-                'lax'  // SameSite Policy (lax, strict, none)
-            )
-        );
-
-        return $response;
+        // Retourner le nom d'utilisateur
+        return $this->json(['username' => $user->getUserIdentifier()]);
     }
 }

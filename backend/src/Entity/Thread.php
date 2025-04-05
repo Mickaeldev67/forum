@@ -13,7 +13,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: ThreadRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['post:read']],
-    denormalizationContext: ['groups' => ['post:write']]
+    denormalizationContext: ['groups' => ['post:write']],
+    security: "is_granted('IS_AUTHENTICATED_FULLY')"
 )]
 class Thread
 {

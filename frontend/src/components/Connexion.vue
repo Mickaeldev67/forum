@@ -19,7 +19,7 @@
 
       // Vérifie dans la console si la réponse contient le cookie
       console.log('Réponse de la connexion :', response);
-      if(response.data.message == "success") {
+      if(response.status == 200) {
         success.value = "Connexion avec succès !";
         router.push('/subject');
       }
@@ -33,8 +33,8 @@
 <template>
   <form @submit.prevent="Connexion" class="flex flex-col items-center w-full gap-2">
     <h1 class="text-2xl">Page de connexion</h1>
-    <input v-model="credentials.email" class="w-1/2 py-1 px-2" type="email" placeholder="adresse@email.com">
-    <input v-model="credentials.password" class="w-1/2 py-1 px-2" type="password" placeholder="Mot de passe">
+    <input v-model="credentials.email" class="w-1/2 py-1 px-2 border" type="email" placeholder="adresse@email.com">
+    <input v-model="credentials.password" class="w-1/2 py-1 px-2 border" type="password" placeholder="Mot de passe">
     <button class="hover:bg-gray-200 rounded-xl border px-2" type="submit">Connexion</button>
     <span v-if="error" class="text-red-400">{{ error }}</span>
     <div v-if="success" role="status" class="flex items-center gap-3">
