@@ -10,7 +10,7 @@
 
   const Connexion = async () => {
     try {
-      const response = await api.post('/login', {
+      const response = await api.post('/login_check', {
         email: credentials.value.email,
         password: credentials.value.password
       },{
@@ -19,7 +19,7 @@
 
       // Vérifie dans la console si la réponse contient le cookie
       console.log('Réponse de la connexion :', response);
-      if(response.status == 200) {
+      if(response.status === 204) {
         success.value = "Connexion avec succès !";
         router.push('/subject');
       }
