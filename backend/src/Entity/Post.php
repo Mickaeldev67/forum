@@ -31,9 +31,11 @@ class Post
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
+    #[Groups(['post:read', 'post:write'])]
     private ?Thread $thread = null;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
+    #[Groups(['post:read', 'post:write'])]
     private ?User $author = null;
 
     public function __construct()

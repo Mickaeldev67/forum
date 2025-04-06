@@ -9,46 +9,51 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\State\ThreadStateProcessor;
 
 #[ORM\Entity(repositoryClass: ThreadRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['post:read']],
-    denormalizationContext: ['groups' => ['post:write']],
-    security: "is_granted('IS_AUTHENTICATED_FULLY')"
+    normalizationContext: ['groups' => ['thread:read']],
+    denormalizationContext: ['groups' => ['thread:write']],
+    security: "is_granted('IS_AUTHENTICATED_FULLY')",
+    processor: ThreadStateProcessor::class,
 )]
 class Thread
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['thread:read', 'thread:write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['post:read', 'post:write'])]
+    #[Groups(['thread:read', 'thread:write'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['post:read', 'post:write'])]
+    #[Groups(['thread:read', 'thread:write'])]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(['post:read', 'post:write'])]
+    #[Groups(['thread:read', 'thread:write'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'threads')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['post:read', 'post:write'])]
+    #[Groups(['thread:read', 'thread:write'])]
     private ?User $author = null;
 
     /**
      * @var Collection<int, Post>
      */
     #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'thread')]
+    #[Groups(['thread:read', 'thread:write'])]
     private Collection $posts;
 
     public function __construct()
     {
         $this->posts = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int

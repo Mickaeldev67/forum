@@ -15,18 +15,19 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[ApiResource(
-    normalizationContext: ['groups' => ['post:read']],
-    denormalizationContext: ['groups' => ['post:write']]
+    normalizationContext: ['groups' => ['user:read']],
+    denormalizationContext: ['groups' => ['user:write']]
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['user:read', 'user:write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(['post:read', 'post:write'])]
+    #[Groups(['user:read', 'user:write'])]
     private ?string $email = null;
 
     /**
@@ -39,23 +40,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Groups(['post:read', 'post:write'])]
+    #[Groups(['user:read', 'user:write'])]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['post:read', 'post:write'])]
+    #[Groups(['user:read', 'user:write'])]
     private ?string $username = null;
 
     /**
      * @var Collection<int, Thread>
      */
     #[ORM\OneToMany(targetEntity: Thread::class, mappedBy: 'author', orphanRemoval: true)]
+    #[Groups(['user:read', 'user:write'])]
     private Collection $threads;
 
     /**
      * @var Collection<int, Post>
      */
     #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'author')]
+    #[Groups(['user:read', 'user:write'])]
     private Collection $posts;
 
     public function __construct()

@@ -3,7 +3,7 @@
     import { useRoute } from 'vue-router';
     import api from '../api';
 
-    const Threads = ref([]);
+    const threads = ref([]);
     const error = ref('');
 
     onMounted(async () => {
@@ -14,6 +14,8 @@
                     'Content-Type': 'application/ld+json', // Définit le type de contenu que l'on attend de l'API
                 }
             });
+            console.log(response.data.member);
+            threads.value = response.data.member;
             // Traitement de la réponse ici
         } catch (err) {
             error.value = err; // Enregistre l'erreur si la requête échoue
@@ -22,15 +24,20 @@
 </script>
 
 <template>
-    <div class="flex justify-between">
-        <h1>Liste des sujets</h1>
-        <router-link to="/thread_create">Créer un sujet</router-link>
+    <div class="flex justify-between p-4">
+        <h1 class="text-xl">Liste des sujets</h1>
+        <router-link to="/thread_create" class="border px-2 rounded hover:bg-gray-200">Créer un sujet</router-link>
     </div>
     
     <span class="text-red-400">{{ error }}</span>
-    <li v-for="thread in threads">
-        <div>
+    <li v-for="thread in threads" :key="thread.id" class="list-none px-3 py-1">
+        <router-link :to="`/threads/${thread.id}`" class="flex gap-4 bg-gray-300 p-3 justify-between rounded-lg hover:text-gray-100">
             <span>{{ thread.title }}</span>
-        </div>
+            <div>
+                <p>{{ thread.description }}</p>
+                <span>{{ thread.createdAt }}</span>
+            </div>
+            
+        </router-link>
     </li>
 </template>

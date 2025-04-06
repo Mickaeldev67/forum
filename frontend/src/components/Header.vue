@@ -1,6 +1,6 @@
 <script setup>
 import { useRoute } from 'vue-router';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import api from '../api';
 
 const route = useRoute();
@@ -17,9 +17,9 @@ onMounted(() => {
   getCurrentUser();
 });
 
-// watch(() => route.fullPath, () => {
-//   getCurrentUser();
-// });
+watch(() => route.fullPath, () => {
+  getCurrentUser();
+});
 
 </script>
 
