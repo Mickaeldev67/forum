@@ -7,11 +7,16 @@ use ApiPlatform\Metadata\ApiResource;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use App\State\PostStateProcessor;
 
+#[ApiFilter(SearchFilter::class, properties: ['thread' => 'exact'])]
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['post:read']],
-    denormalizationContext: ['groups' => ['post:write']]
+    denormalizationContext: ['groups' => ['post:write']],
+    processor: PostStateProcessor::class,
 )]
 class Post
 {
@@ -22,20 +27,20 @@ class Post
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[ApiProperty()]
-    #[Groups(['post:read', 'post:write'])]
+    #[Groups(['post:read', 'post:write', 'thread:read'])]
     #[SerializedName("content")]
     private ?string $content = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(['post:read'])]
+    #[Groups(['post:read', 'thread:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
-    #[Groups(['post:read', 'post:write'])]
+    #[Groups(['post:write'])]
     private ?Thread $thread = null;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
-    #[Groups(['post:read', 'post:write'])]
+    #[Groups(['post:read', 'post:write', 'thread:read'])]
     private ?User $author = null;
 
     public function __construct()
@@ -94,5 +99,11 @@ class Post
         $this->author = $author;
 
         return $this;
+    }
+
+    #[Groups(['post:read'])]
+    public function getFormattedCreatedAt(): ?string
+    {
+        return $this->createdAt?->format('d/m/y H:i');
     }
 }

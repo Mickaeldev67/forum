@@ -3,12 +3,14 @@ import Connexion from '../components/Connexion.vue';
 import Subscribe from '../components/Subscribe.vue';
 import Subject from '../components/Subject.vue';
 import ThreadCreate from '../components/ThreadCreate.vue';
+import ThreadShow from '../components/ThreadShow.vue';
 
 const routes = [
   { path: '/', name: 'Home', component: Connexion },
-  { path: '/subscribe', name: 'Subscribe', component: Subscribe },
-  { path: '/subject', name: 'Subject', component: Subject },
-  { path: '/thread_create', name: 'ThreadCreate', component: ThreadCreate },
+  { path: '/subscribe', name: 'subscribe', component: Subscribe },
+  { path: '/subject', name: 'subject', component: Subject },
+  { path: '/thread_create', name: 'thread_create', component: ThreadCreate },
+  { path: '/threads/:id', name: 'thread_show', component: ThreadShow },
 ];
 
 const router = createRouter({

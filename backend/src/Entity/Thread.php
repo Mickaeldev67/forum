@@ -27,11 +27,11 @@ class Thread
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['thread:read', 'thread:write'])]
+    #[Groups(['thread:read', 'thread:write', 'post:read'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['thread:read', 'thread:write'])]
+    #[Groups(['thread:read', 'thread:write', 'post:read'])]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -40,14 +40,14 @@ class Thread
 
     #[ORM\ManyToOne(inversedBy: 'threads')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['thread:read', 'thread:write'])]
+    #[Groups(['thread:read', 'thread:write', 'post:read'])]
     private ?User $author = null;
 
     /**
      * @var Collection<int, Post>
      */
     #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'thread')]
-    #[Groups(['thread:read', 'thread:write'])]
+    #[Groups(['thread:write'])]
     private Collection $posts;
 
     public function __construct()
@@ -137,5 +137,11 @@ class Thread
         }
 
         return $this;
+    }
+
+    #[Groups(['thread:read', 'post:read'])]
+    public function getFormattedCreatedAt(): ?string
+    {
+        return $this->createdAt?->format('d/m/y H:i');
     }
 }

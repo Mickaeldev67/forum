@@ -1,6 +1,5 @@
 <script setup>
     import { ref, onMounted } from 'vue';
-    import { useRoute } from 'vue-router';
     import api from '../api';
 
     const threads = ref([]);
@@ -14,7 +13,6 @@
                     'Content-Type': 'application/ld+json', // Définit le type de contenu que l'on attend de l'API
                 }
             });
-            console.log(response.data.member);
             threads.value = response.data.member;
             // Traitement de la réponse ici
         } catch (err) {
@@ -31,11 +29,16 @@
     
     <span class="text-red-400">{{ error }}</span>
     <li v-for="thread in threads" :key="thread.id" class="list-none px-3 py-1">
-        <router-link :to="`/threads/${thread.id}`" class="flex gap-4 bg-gray-300 p-3 justify-between rounded-lg hover:text-gray-100">
-            <span>{{ thread.title }}</span>
+        <router-link :to="{ name: 'thread_show', params: { id: thread.id }}" 
+                    class="flex gap-4 bg-gray-300 p-3 justify-between rounded-lg hover:text-gray-100">
             <div>
+                <span>{{ thread.title }}</span>
                 <p>{{ thread.description }}</p>
-                <span>{{ thread.createdAt }}</span>
+            </div>
+            
+            <div>
+                <p>{{ thread.author.username }}</p>
+                <span>{{ thread.formattedCreatedAt }}</span>
             </div>
             
         </router-link>
