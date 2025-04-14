@@ -1,12 +1,12 @@
-<script setup>
+<script setup lang="ts">
   import { ref } from 'vue';
-  import api from '../api.js';
+  import api from '@/api';
   import { useRouter } from 'vue-router';
 
   const router = useRouter();
   const credentials = ref({ email: '', password: ''});
-  const error = ref('');
-  const success = ref('');
+  const error = ref<string>('');
+  const success = ref<string>('');
 
   const Connexion = async () => {
     try {
@@ -23,8 +23,8 @@
         success.value = "Connexion avec succès !";
         router.push('/subject');
       }
-    } catch (error) {
-      console.error("Erreur de connexion: ", error);
+    } catch (err) {
+      console.error("Erreur de connexion: ", err);
       error.value = "Identifiants incorrects.";
     }
   }

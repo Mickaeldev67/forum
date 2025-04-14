@@ -1,10 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import { useRoute } from 'vue-router';
 import { ref, onMounted, watch } from 'vue';
-import api from '../api';
+import api from '@/api';
 
 const route = useRoute();
-const username = ref('');
+const username = ref<string>('');
 
 const getCurrentUser = async () => {
   const response = await api.get('currentUser', {

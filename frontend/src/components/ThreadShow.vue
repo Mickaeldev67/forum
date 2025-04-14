@@ -1,18 +1,36 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import api from '../api';
-
+import api from '@/api';
 const route = useRoute();
-const posts = ref([]);
-const thread = ref([]);
-const error = ref(null);
+const posts = ref<Post[]>([]);
+const thread = ref<Thread>({id:-1, title:'', description: '', author: { username:'' }, formattedCreatedAt:''});
+const error = ref<string>('');
 const newPost = ref('');
-const idThread = ref('');
+const idThread = ref<number>(-1);
+
+interface Thread {
+    id: number;
+    title: string;
+    description: string;
+    author: {
+        username: string;
+    };
+    formattedCreatedAt: string;
+}
+
+interface Post {
+    id: number;
+    content: string;
+    author: {
+        username: string;
+    };
+    formattedCreatedAt: string;
+}
 
 onMounted(async () => {
     const threadId = route.params.id;
-    idThread.value = threadId;
+    idThread.value = Number(threadId);
 
     try {
         const responseThread = await api.get(`/threads/${idThread.value}`, {
@@ -23,9 +41,10 @@ onMounted(async () => {
             });
         thread.value = responseThread.data;
         fetchPosts();
+        setInterval(fetchPosts, 5000)
     } catch (err) {
         console.error('Erreur Thread', err);
-        error.value = err;
+        error.value = String(err);
     } 
 });
 
@@ -43,7 +62,7 @@ const fetchPosts = async () => {
 
         posts.value = response.data.member;
     } catch (err) {
-        error.value = err;
+        error.value = String(err);
     }
 }
 
@@ -68,7 +87,7 @@ const addPost = async () => {
         newPost.value = '';
         fetchPosts();
     } catch (err) {
-        error.value = err;
+        error.value = String(err);
     }
 }
 </script>

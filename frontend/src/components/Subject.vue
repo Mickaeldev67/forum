@@ -1,9 +1,19 @@
-<script setup>
+<script setup lang="ts">
     import { ref, onMounted } from 'vue';
-    import api from '../api';
+    import api from '@/api';
 
-    const threads = ref([]);
-    const error = ref('');
+    const threads = ref<Thread[]>([]);
+    const error = ref<string>('');
+
+    interface Thread {
+        id: number;
+        title: string;
+        description: string;
+        author: {
+            username: string;
+        };
+        formattedCreatedAt: string;
+    }
 
     onMounted(async () => {
         try {
@@ -15,8 +25,8 @@
             });
             threads.value = response.data.member;
             // Traitement de la réponse ici
-        } catch (err) {
-            error.value = err; // Enregistre l'erreur si la requête échoue
+        } catch (err: unknown) {
+            error.value = String(err); // Enregistre l'erreur si la requête échoue
         }
     });
 </script>

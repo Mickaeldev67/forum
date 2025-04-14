@@ -1,12 +1,12 @@
-<script setup>
+<script setup lang="ts">
     import { ref } from 'vue';
-    import api from '../api';
+    import api from '@/api';
     import { useRouter } from 'vue-router';
 
     const router = useRouter();
 
     const newThread = ref({ title: '', description: '' });
-    const error = ref('');
+    const error = ref<string>('');
 
     const addThread = async () => {
         try {
@@ -28,7 +28,7 @@
             router.push('/subject');
             
         } catch (err) {
-            error.value = err;
+            error.value = String(err);
         }
         
     }

@@ -1,13 +1,12 @@
-<script setup>
+<script setup lang="ts">
     import { ref } from 'vue';
-    import api from '../api.js';
-    import bcrypt from 'bcryptjs';
+    import api from '@/api';
     import { useRouter } from 'vue-router';
  
     const router = useRouter();
     const input = ref({ email: '', username: '', password:'', passwordverif:'' });
-    const error = ref('');
-    const success = ref('');
+    const error = ref<string>('');
+    const success = ref<string>('');
     const subscribe = async () => {
         // Vérification de mot de passe 
         if (input.value.password !== input.value.passwordverif) {
