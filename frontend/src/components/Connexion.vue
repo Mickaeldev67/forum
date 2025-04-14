@@ -3,8 +3,13 @@
   import api from '@/api';
   import { useRouter } from 'vue-router';
 
+  interface credentials {
+    email: string;
+    password: string;
+  }
+
   const router = useRouter();
-  const credentials = ref({ email: '', password: ''});
+  const credentials = ref<credentials>({ email: '', password: ''});
   const error = ref<string>('');
   const success = ref<string>('');
 

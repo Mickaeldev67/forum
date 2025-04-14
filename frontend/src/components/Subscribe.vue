@@ -3,8 +3,15 @@
     import api from '@/api';
     import { useRouter } from 'vue-router';
  
+    interface input {
+        email: string;
+        username: string;
+        password: string;
+        passwordverif: string;
+    }
+
     const router = useRouter();
-    const input = ref({ email: '', username: '', password:'', passwordverif:'' });
+    const input = ref<input>({ email: '', username: '', password:'', passwordverif:'' });
     const error = ref<string>('');
     const success = ref<string>('');
     const subscribe = async () => {

@@ -5,8 +5,13 @@
 
     const router = useRouter();
 
-    const newThread = ref({ title: '', description: '' });
+    const newThread = ref<newThread>({ title: '', description: '' });
     const error = ref<string>('');
+
+    interface newThread {
+        title: string;
+        description: string;
+    }
 
     const addThread = async () => {
         try {
